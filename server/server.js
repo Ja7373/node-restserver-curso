@@ -1,48 +1,59 @@
 require('./config/config');
-
+// Using Node.js `require()`
+const mongoose = require('mongoose');
 const express = require('express');
+const uniqueValidator = require('mongoose-unique-validator');
+
+//======================================= 
+
 const app = express();
+
+
+
 
 const bodyParser = require('body-parser');
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
+// importamos el archivo de rutas
+app.use(require('./routes/usuario'));
 
 
-app.get('/usuario', function(req, res) {
-    res.json('get usuario');
-});
+let conexionBD = async() => {
 
-app.post('/usuario', function(req, res) {
-    let body = req.body;
-    console.log(req.body);
+    await mongoose.connect('mongodb://localhost:27017/cafe', {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    }, (err, res) => {
+        if (err) {
+            console.log('Error: ', err);
+            throw err;
+        }
+        console.log('base de datos conectada OK');
 
-    if (body.nombre === undefined) {
-        res.status(400).json({
-            ok: false,
-            mensaje: 'el nobre es necesario',
-
-        });
-    } else {
-        res.json({
-            persona: body,
-        });
-
-    }
-
-});
-
-app.put('/usuario/:id', function(req, res) {
-    let id = req.params.id;
-    res.json({
-        id,
     });
+};
+
+mongoose.connect(process.env.URLDB, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}, (err, res) => {
+    if (err) {
+        console.log('Error: ', err);
+        throw err;
+    }
+    console.log('base de datos conectada OK');
+
 });
 
-app.delete('/usuario', function(req, res) {
-    res.json('delete usuario');
-});
+// conexionBD().then(() => {
+//     console.log("Conectada");
+// }).catch((err) => {
+//     console.log('error al conectarBD: ', err);
+// });
+
+
 
 app.listen(process.env.PORT, () => {
     console.log('Escuchando puerto: ', process.env.PORT);
