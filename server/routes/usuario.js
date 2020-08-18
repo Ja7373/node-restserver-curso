@@ -55,7 +55,7 @@ app.get('/usuario', verificaToken, (req, res) => {
 
 });
 
-app.post('/usuario', verificaAdmin_Role, function(req, res) {
+app.post('/usuario', [verificaToken, verificaAdmin_Role], function(req, res) {
     let body = req.body;
     //console.log(req.body);
     // console.log('password: ', body.password);
