@@ -5,11 +5,25 @@ const { response } = require('express');
 const bcrypt = require('bcryptjs');
 const _ = require('underscore')
 const usuario = require('../models/usuario');
+
+const { verificaToken, verificaAdmin_Role } = require('../middlewares/autenticacion');
 //======================================= 
 
 const app = express();
 
-app.get('/usuario', function(req, res) {
+const bodyParser = require('body-parser');
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false })); // es necesario desde julio 2020
+
+app.get('/usuario', verificaToken, (req, res) => {
+
+    // console.log('request:', req);
+    // return res.json({
+    //     usuario: req.usuario,
+    //     nombre: req.usuario.nombre,
+    //     email: req.usuario.email,
+    // });
+
     //res.json('get usuario local');
     let desde = req.query.desde || 0;
     desde = Number(desde);
@@ -41,7 +55,7 @@ app.get('/usuario', function(req, res) {
 
 });
 
-app.post('/usuario', function(req, res) {
+app.post('/usuario', verificaAdmin_Role, function(req, res) {
     let body = req.body;
     //console.log(req.body);
     // console.log('password: ', body.password);
@@ -71,11 +85,11 @@ app.post('/usuario', function(req, res) {
     });
 });
 
-app.put('/usuario/:id', function(req, res) {
+app.put('/usuario/:id', [verificaToken, verificaAdmin_Role], function(req, res) {
     let id = req.params.id;
     let body = _.pick(req.body, ['nombre', 'email', 'img', 'role', 'estado']);
-
-
+    //console.log('llegué hasta aquí');
+    console.log('body--:', req.body);
     Usuario.findByIdAndUpdate(id, body, { new: true, runValidatosr: true }, (err, usuarioDB) => {
         console.log('body: ', body);
         if (err) {
@@ -98,7 +112,7 @@ app.put('/usuario/:id', function(req, res) {
 
 });
 
-app.delete('/usuario/:id', function(req, res) {
+app.delete('/usuario/:id', verificaToken, function(req, res) {
     //res.json('delete usuario');
     let id = req.params.id;
     let cambiaEstado = {

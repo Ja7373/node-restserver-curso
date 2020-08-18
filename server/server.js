@@ -8,16 +8,19 @@ const uniqueValidator = require('mongoose-unique-validator');
 
 const app = express();
 
-
+// configuracion global de rutas
+app.use(require('./routes/index'));
+//app.use(require('./routes/usuario'));
+// app.use(require('./routes/login'));
 
 
 const bodyParser = require('body-parser');
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
-// parse application/json
+// parse application/json()
 app.use(bodyParser.json());
-// importamos el archivo de rutas
-app.use(require('./routes/usuario'));
+
+
 
 
 let conexionBD = async() => {
