@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken');
 let verificaToken = (req, res, next) => {
 
     let token = req.get('token');
-    //console.log('request', req);
+    // console.log('request', req);
 
     jwt.verify(token, process.env.SEED_TOKEN, (err, decoded) => {
         if (err) {
@@ -17,7 +17,7 @@ let verificaToken = (req, res, next) => {
                 err
             });
         }
-
+        console.log('decoded.usuario:', decoded.usuario);
         req.usuario = decoded.usuario;
         next();
     });
