@@ -2,6 +2,7 @@ require('./config/config');
 // Using Node.js `require()`
 const mongoose = require('mongoose');
 const express = require('express');
+const path = require('path');
 const uniqueValidator = require('mongoose-unique-validator');
 
 //======================================= 
@@ -20,8 +21,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json()
 app.use(bodyParser.json());
 
+//habilitar la carpeta public
+app.use(express.static(path.resolve(__dirname, '../public')));
 
-
+console.log('Directorio public: ', path.resolve(__dirname, '../public'));
 
 let conexionBD = async() => {
 
