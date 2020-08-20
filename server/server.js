@@ -9,6 +9,7 @@ const uniqueValidator = require('mongoose-unique-validator');
 
 const app = express();
 
+
 // configuracion global de rutas
 app.use(require('./routes/index'));
 //app.use(require('./routes/usuario'));

@@ -56,6 +56,33 @@ let verificaAdmin_Role = (req, res, next) => {
 };
 
 
+//====================================
+// VERIFICAR TOKEN PARA IMAGEN
+//====================================
+
+
+let verificaTokenImg = (req, res, next) => {
+
+    let token = req.query.token;
+    console.log('token: ', token);
+    // console.log('request', req);
+    // res.json({
+    //     token
+    // });
+
+    jwt.verify(token, process.env.SEED_TOKEN, (err, decoded) => {
+        if (err) {
+            return res.status(401).json({
+                ok: false,
+                err
+            });
+        }
+        console.log('decoded.usuario:', decoded.usuario);
+        req.usuario = decoded.usuario;
+        next();
+    });
+};
+
 
 
 
@@ -63,4 +90,6 @@ let verificaAdmin_Role = (req, res, next) => {
 module.exports = {
     verificaToken,
     verificaAdmin_Role,
+    verificaTokenImg
+
 };
